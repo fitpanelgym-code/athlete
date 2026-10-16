@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitPanel — برنامه تمرینی محمد مهدی قاسمی</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon-blue: #00BFFF;
+    --neon-blue-bright: #00E5FF;
+    --neon-cyan: #00F2FE;
+    --neon-silver: #C0C0C0;
+    --neon-silver-light: #E8E8E8;
+    --dark-bg: #000000;
+    --glow-blue: 0 0 20px rgba(0, 191, 255, 0.5);
+    --glow-cyan: 0 0 20px rgba(0, 242, 254, 0.5);
+    --gradient-main: linear-gradient(135deg, #C0C0C0, #00BFFF);
+    --gradient-btn: linear-gradient(135deg, #00BFFF, #00E5FF);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    background: #000000;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(0, 191, 255, 0.15), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(0, 229, 255, 0.1), transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(192, 192, 192, 0.05), transparent 60%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 20px;
+    color: #fff;
+    line-height: 1.8;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* === هدر FitPanel === */
+  .gym-header {
+    background: rgba(15, 15, 25, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 191, 255, 0.35);
+    border-radius: 20px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow:
+      0 8px 30px rgba(0, 0, 0, 0.5),
+      0 0 25px rgba(0, 191, 255, 0.15),
+      inset 0 0 25px rgba(0, 191, 255, 0.03);
+  }
+  .gym-brand { display: flex; align-items: center; gap: 14px; }
+  .gym-logo {
+    width: 65px; height: 65px; border-radius: 16px;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 3px;
+    border: 1px solid rgba(0, 191, 255, 0.5);
+    box-shadow:
+      0 0 20px rgba(0, 191, 255, 0.5),
+      inset 0 0 15px rgba(0, 191, 255, 0.1);
+  }
+  .gym-logo img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5)); }
+  .gym-info .gym-name {
+    font-size: 1.35em;
+    font-weight: 900;
+    background: linear-gradient(135deg, #C0C0C0, #00E5FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.3;
+    filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.4));
+  }
+  .gym-info .gym-sub {
+    font-size: 0.8em;
+    color: #00BFFF;
+    font-weight: 500;
+    margin-top: 2px;
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
+  }
+  .gym-contact {
+    text-align: left;
+    font-size: 0.88em;
+    color: #00E5FF;
+    font-weight: 700;
+    direction: ltr;
+    background: rgba(0, 191, 255, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 191, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
+  }
+
+  /* === هدر شخصی === */
+  .personal-header {
+    background: rgba(15, 15, 25, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 191, 255, 0.25);
+    border-radius: 18px;
+    padding: 14px 22px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.4),
+      inset 0 0 20px rgba(0, 191, 255, 0.03);
+  }
+  .personal-header .name {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: #E8E8E8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .personal-header .name span {
+    color: #00BFFF;
+    font-weight: 400;
+    font-size: 0.85em;
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
+  }
+  .personal-header .date {
+    font-size: 0.9em;
+    color: #00E5FF;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.4);
+  }
+
+  /* === کارت شهریه === */
+  .fee-card {
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.12), rgba(0, 229, 255, 0.06));
+    border: 1px solid rgba(0, 191, 255, 0.35);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 14px;
+    box-shadow: 
+      0 8px 30px rgba(0, 0, 0, 0.4),
+      0 0 25px rgba(0, 191, 255, 0.15),
+      inset 0 0 25px rgba(0, 191, 255, 0.05);
+  }
+  .fee-card h3 {
+    font-size: 1.05em;
+    color: #00E5FF;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(0, 191, 255, 0.6);
+  }
+  .fee-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fee-item {
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(0, 191, 255, 0.2);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .fee-item:hover {
+    border-color: rgba(0, 191, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
+  }
+  .fee-item .label {
+    font-size: 0.78em;
+    color: #a5b4fc;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .fee-item .value {
+    font-size: 1.2em;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.4;
+  }
+  .fee-item .value.due {
+    color: #00E5FF;
+    text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+  }
+  .fee-item .value.ok {
+    color: #00FFAA;
+    text-shadow: 0 0 12px rgba(0, 255, 170, 0.5);
+  }
+  .fee-item .value.warning {
+    color: #FFD54F;
+    text-shadow: 0 0 12px rgba(255, 213, 79, 0.5);
+  }
+  .fee-item .value.danger {
+    color: #FF6B6B;
+    text-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+  .fee-progress {
+    margin-top: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 191, 255, 0.2);
+  }
+  .fee-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00FFAA, #00E5FF);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+  }
+  .fee-progress-bar.warning {
+    background: linear-gradient(90deg, #FFD54F, #FFB300);
+    box-shadow: 0 0 12px rgba(255, 213, 79, 0.6);
+  }
+  .fee-progress-bar.danger {
+    background: linear-gradient(90deg, #FF6B6B, #EE5A24);
+    box-shadow: 0 0 12px rgba(255, 107, 107, 0.6);
+  }
+
+  /* === هدر اصلی === */
+  header {
+    text-align: center;
+    padding: 28px 20px;
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.15), rgba(192, 192, 192, 0.08));
+    border: 1px solid rgba(0, 191, 255, 0.35);
+    border-radius: 20px;
+    margin-bottom: 18px;
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(0, 191, 255, 0.2),
+      inset 0 0 30px rgba(0, 191, 255, 0.05);
+  }
+  header h1 {
+    font-size: 1.75em;
+    font-weight: 900;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #E8E8E8, #00E5FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 15px rgba(0, 191, 255, 0.5));
+  }
+  header p {
+    font-size: 0.9em;
+    color: #a5b4fc;
+  }
+
+  /* === شعار === */
+  .slogan {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(0, 229, 255, 0.05));
+    border: 1px dashed rgba(0, 191, 255, 0.5);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 25px;
+    font-size: 1em;
+    font-weight: 700;
+    color: #00E5FF;
+    text-shadow: 0 0 12px rgba(0, 191, 255, 0.6);
+  }
+  .slogan span {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 400;
+    color: #7ecbff;
+    margin-top: 6px;
+  }
+
+  /* === روزها === */
+  .day {
+    background: rgba(15, 15, 25, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 22px;
+    border: 1px solid rgba(0, 191, 255, 0.25);
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.4),
+      inset 0 0 25px rgba(0, 191, 255, 0.03);
+    transition: all 0.3s;
+  }
+  .day:hover {
+    border-color: rgba(0, 191, 255, 0.5);
+    box-shadow:
+      0 8px 30px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(0, 191, 255, 0.2),
+      inset 0 0 25px rgba(0, 191, 255, 0.05);
+  }
+  .day-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed rgba(0, 191, 255, 0.3);
+    color: #E8E8E8;
+  }
+  .day-num {
+    background: linear-gradient(135deg, #C0C0C0, #00BFFF);
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900;
+    font-size: 0.9em;
+    flex-shrink: 0;
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
+  }
+  .day.mamoot .day-num {
+    background: linear-gradient(135deg, #00BFFF, #00E5FF);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+  }
+  .day.drop .day-num {
+    background: linear-gradient(135deg, #E8E8E8, #00BFFF);
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+  }
+
+  /* === جدول === */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+  th {
+    background: rgba(0, 191, 255, 0.12);
+    padding: 12px 10px;
+    text-align: right;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0, 191, 255, 0.3);
+    font-size: 0.88em;
+    color: #00E5FF;
+    text-shadow: 0 0 8px rgba(0, 191, 255, 0.4);
+  }
+  td {
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(0, 191, 255, 0.08);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(0, 191, 255, 0.05); }
+
+  /* === برچسب‌ها === */
+  .tag {
+    display: inline-block;
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: 600;
+  }
+  .tag.drop {
+    background: rgba(0, 229, 255, 0.15);
+    color: #00E5FF;
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+  }
+  .tag.super {
+    background: rgba(255, 213, 79, 0.15);
+    color: #FFD54F;
+    border: 1px solid rgba(255, 213, 79, 0.4);
+    box-shadow: 0 0 10px rgba(255, 213, 79, 0.2);
+  }
+  .tag.normal {
+    background: rgba(0, 255, 170, 0.15);
+    color: #00FFAA;
+    border: 1px solid rgba(0, 255, 170, 0.4);
+    box-shadow: 0 0 10px rgba(0, 255, 170, 0.2);
+  }
+
+  /* === نکته === */
+  .note {
+    background: rgba(0, 191, 255, 0.08);
+    border-right: 4px solid #00BFFF;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-top: 14px;
+    font-size: 0.85em;
+    color: #7ecbff;
+    box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.05);
+  }
+
+  /* === هشدار === */
+  .warn {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(238, 90, 36, 0.08));
+    border: 1px solid rgba(255, 107, 107, 0.35);
+    border-radius: 20px;
+    padding: 22px;
+    margin-top: 25px;
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.4),
+      inset 0 0 20px rgba(255, 107, 107, 0.05);
+  }
+  .warn h3 {
+    color: #FF8FA3;
+    margin-bottom: 12px;
+    font-size: 1.1em;
+    text-shadow: 0 0 12px rgba(255, 107, 107, 0.6);
+  }
+  .warn ul { list-style: none; }
+  .warn li {
+    padding: 7px 0;
+    padding-right: 24px;
+    position: relative;
+    font-size: 0.9em;
+  }
+  .warn li::before {
+    content: "⚠️";
+    position: absolute;
+    right: 0;
+  }
+
+  /* === فوتر تماس === */
+  .contact-footer {
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.15), rgba(0, 229, 255, 0.08));
+    border: 1px solid rgba(0, 191, 255, 0.4);
+    border-radius: 20px;
+    padding: 28px 22px;
+    margin-top: 25px;
+    text-align: center;
+    color: #E8E8E8;
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(0, 191, 255, 0.2),
+      inset 0 0 30px rgba(0, 191, 255, 0.05);
+  }
+  .contact-footer h3 {
+    font-size: 1.15em;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #00E5FF;
+    text-shadow: 0 0 15px rgba(0, 191, 255, 0.6);
+  }
+  .contact-footer p {
+    font-size: 0.9em;
+    color: #a5b4fc;
+  }
+  .contact-footer .phone {
+    font-size: 1.5em;
+    font-weight: 900;
+    letter-spacing: 3px;
+    margin: 14px 0;
+    color: #00E5FF;
+    direction: ltr;
+    display: inline-block;
+    background: rgba(0, 191, 255, 0.12);
+    padding: 10px 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 191, 255, 0.4);
+    box-shadow: 
+      0 0 25px rgba(0, 191, 255, 0.4),
+      inset 0 0 15px rgba(0, 191, 255, 0.1);
+    text-shadow: 0 0 15px rgba(0, 191, 255, 0.6);
+  }
+  .contact-footer .apps {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .contact-footer .app-badge {
+    background: rgba(0, 191, 255, 0.15);
+    color: #00E5FF;
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    border: 1px solid rgba(0, 191, 255, 0.35);
+    box-shadow: 0 0 12px rgba(0, 191, 255, 0.2);
+    transition: all 0.3s;
+  }
+  .contact-footer .app-badge:hover {
+    background: rgba(0, 191, 255, 0.25);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+    transform: translateY(-2px);
+  }
+  .contact-footer .final-text {
+    font-size: 0.9em;
+    margin-top: 14px;
+    font-weight: 600;
+    color: #E8E8E8;
+  }
+
+  /* === فوتر === */
+  footer {
+    text-align: center;
+    padding: 22px;
+    color: #6b7280;
+    font-size: 0.82em;
+    letter-spacing: 0.5px;
+  }
+  footer span {
+    color: #00BFFF;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+  }
+
+  /* === ریسپانسیو === */
+  @media (max-width: 600px) {
+    body { padding: 12px; }
+    header h1 { font-size: 1.35em; }
+    .personal-header, .gym-header { flex-direction: column; text-align: center; }
+    .gym-brand { flex-direction: column; text-align: center; }
+    .gym-contact { text-align: center; }
+    .fee-grid { grid-template-columns: 1fr; }
+    .day { padding: 16px; }
+    table { font-size: 0.8em; }
+    th, td { padding: 9px 5px; }
+    .contact-footer .phone { font-size: 1.15em; letter-spacing: 2px; }
+    .fee-item .value { font-size: 1em; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- === هدر FitPanel === -->
+  <div class="gym-header">
+    <div class="gym-brand">
+      <div class="gym-logo">
+        <img src="logo.png" alt="FitPanel" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:1.8em;font-weight:900;color:#00E5FF;\'>FP</span>';">
+      </div>
+      <div class="gym-info">
+        <div class="gym-name">FitPanel</div>
+        <div class="gym-sub">سیستم مدیریت هوشمند باشگاه</div>
+      </div>
+    </div>
+    <div class="gym-contact">📞 ۰۹۰۲۳۹۸۹۷۸۸</div>
+  </div>
+
+  <!-- === هدر شخصی === -->
+  <div class="personal-header">
+    <div class="name">👤 محمد مهدی قاسمی <span>— ورزشکار</span></div>
+    <div class="date">📅 ۱۴۰۵/۰۷/۲۵</div>
+  </div>
+
+  <!-- === کارت شهریه === -->
+  <div class="fee-card">
+    <h3>💳 وضعیت شهریه</h3>
+    <div class="fee-grid">
+      <div class="fee-item">
+        <div class="label">📅 تاریخ سررسید پرداخت</div>
+        <div class="value due" id="due-date">در حال محاسبه...</div>
+      </div>
+      <div class="fee-item">
+        <div class="label">⏳ مدت زمان باقی‌مانده</div>
+        <div class="value ok" id="remaining-time">در حال محاسبه...</div>
+      </div>
+    </div>
+    <div class="fee-progress">
+      <div class="fee-progress-bar" id="progress-bar" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <!-- === هدر اصلی === -->
+  <header>
+    <h1>🔥 برنامه تمرینی ۶ روزه</h1>
+    <p>سیستم ماموت + دراپ‌ست | تک‌عضله‌ای + چندعضله‌ای</p>
+  </header>
+
+  <!-- === شعار === -->
+  <div class="slogan">
+    «درد امروز، قدرت فرداست — تسلیم نشو، ماموت بساز» 💪
+    <span>No Pain, No Mammoth</span>
+  </div>
+
+  <!-- روز ۱ -->
+  <div class="day mamoot">
+    <div class="day-title"><span class="day-num">۱</span><span>سینه — سیستم ماموت</span></div>
+    <table>
+      <tr><th>بلوک</th><th>حرکات</th><th>تکرار</th></tr>
+      <tr><td>۱</td><td>پرس سینه هالتر + پرس دمبل جفت موازی + پرس بالاسینه دمبل + پرس سینه هالتر دست‌جمع</td><td>۶-۸</td></tr>
+      <tr><td>۲</td><td>پرس بالاسینه هالتر + فلای سینه دستگاه + پرس سینه دستگاه + کراس اوور</td><td>۶-۸</td></tr>
+      <tr><td>۳</td><td>پرس زیرسینه هالتر + فلای زیرسینه دمبل + پرس بالاسینه دست‌جمع + قفسه سینه اسمیت</td><td>۶-۸</td></tr>
+      <tr><td>۴</td><td>شنا دست باز</td><td>تا ناتوانی</td></tr>
+    </table>
+    <div class="note">⏱ استراحت: ۸-۱۰ ثانیه بین حرکات داخل بلوک | ۱.۵-۲ دقیقه بین بلوک‌ها</div>
+  </div>
+
+  <!-- روز ۲ -->
+  <div class="day mamoot">
+    <div class="day-title"><span class="day-num">۲</span><span>بازو + ساعد — سیستم ماموت</span></div>
+    <table>
+      <tr><th>بلوک</th><th>حرکات</th><th>تکرار</th></tr>
+      <tr><td>۱</td><td>جلو بازو میله صاف سیم‌کش + EZ هالتر خم ایستاده + دست‌عکس میله صاف سیم‌کش + دمبل تناوبی</td><td>۶-۸</td></tr>
+      <tr><td>۲</td><td>پشت بازو میله صاف سیم‌کش + سیم‌کش V + دستگاه دیپ + دمبل تک و جفت</td><td>۶-۸</td></tr>
+      <tr><td>۳</td><td>جلو بازو میله صاف نشسته + دمبل چکشی شیب‌دار + پشت بازو هالتر خوابیده + سیم‌کش کراس</td><td>۶-۸</td></tr>
+      <tr><td>۴</td><td>ساعد صفه + مچ‌کردن + دستگاه + دمبل چرخشی</td><td>۱۰-۱۲</td></tr>
+    </table>
+    <div class="note">⏱ استراحت: ۸-۱۰ ثانیه بین حرکات داخل بلوک | ۱.۵-۲ دقیقه بین بلوک‌ها</div>
+  </div>
+
+  <!-- روز ۳ -->
+  <div class="day mamoot">
+    <div class="day-title"><span class="day-num">۳</span><span>پا + شکم — سیستم ماموت</span></div>
+    <table>
+      <tr><th>بلوک</th><th>حرکات</th><th>تکرار</th></tr>
+      <tr><td>۱</td><td>اسکات هالتر + هاگ پا + جلو پا دستگاه + خیاطی داخل ران</td><td>۶-۸</td></tr>
+      <tr><td>۲</td><td>پشت پا دستگاه + پرس پا + پشت پا تک + پشت پا نشسته</td><td>۶-۸</td></tr>
+      <tr><td>۳</td><td>اسکات دمبل + صاف پا پرسی + صاف پا دستگاه</td><td>۶-۸</td></tr>
+      <tr><td>۴</td><td>لیفت</td><td>۶-۸</td></tr>
+      <tr><td>۵</td><td>شکم خلبانی</td><td>تا ناتوانی</td></tr>
+    </table>
+    <div class="note">⏱ استراحت: ۸-۱۰ ثانیه بین حرکات داخل بلوک | ۱.۵-۲ دقیقه بین بلوک‌ها</div>
+  </div>
+
+  <!-- روز ۴ -->
+  <div class="day mamoot">
+    <div class="day-title"><span class="day-num">۴</span><span>بک + سرشانه + کول — سیستم ماموت</span></div>
+    <table>
+      <tr><th>بلوک</th><th>حرکات</th><th>تکرار</th></tr>
+      <tr><td>۱</td><td>زیربغل دستگاه ایکس + لت از جلو + پارویی T بار</td><td>۶-۸</td></tr>
+      <tr><td>۲</td><td>سرشانه دستگاه + آرنولدی + نشر جانبی تک جلو + نشر جانبی تک V</td><td>۶-۸</td></tr>
+      <tr><td>۳</td><td>دو ضرب قدرتی + کول دمبل + کول اسمیت + کول هالتر ایزد جلو</td><td>۶-۸</td></tr>
+      <tr><td>۴</td><td>نشر از پشت + دمبل میز بالاسینه + نشر پشت هالتر دست باز + فیله کمر صفه</td><td>۸-۱۰</td></tr>
+    </table>
+    <div class="note">⏱ استراحت: ۸-۱۰ ثانیه بین حرکات داخل بلوک | ۱.۵-۲ دقیقه بین بلوک‌ها</div>
+  </div>
+
+  <!-- روز ۵ -->
+  <div class="day drop">
+    <div class="day-title"><span class="day-num">۵</span><span>سینه + بازو + ساعد + شکم — دراپ‌ست</span></div>
+    <table>
+      <tr><th>#</th><th>حرکت</th><th>سیستم</th><th>تکرار</th></tr>
+      <tr><td>۱</td><td>پرس سینه هالتر</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۲</td><td>پرس بالاسینه دمبل + موازی</td><td><span class="tag super">سوپرست</span></td><td>۸-۱۰</td></tr>
+      <tr><td>۳</td><td>پرس زیرسینه هالتر</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۴</td><td>فلای دستگاه</td><td><span class="tag normal">عادی</span></td><td>۱۰-۱۲</td></tr>
+      <tr><td>۵</td><td>جلو بازو میله صاف سیم‌کش</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۶</td><td>جلو بازو دمبل چکشی</td><td><span class="tag normal">عادی</span></td><td>۱۰-۱۲</td></tr>
+      <tr><td>۷</td><td>پشت بازو میله صاف سیم‌کش</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۸</td><td>پشت بازو دیپ</td><td><span class="tag drop">دراپ‌ست</span></td><td>تا ناتوانی</td></tr>
+      <tr><td>۹</td><td>ساعد صفه + دمبل چرخشی</td><td><span class="tag super">سوپرست</span></td><td>۱۲-۱۵</td></tr>
+      <tr><td>۱۰</td><td>شکم خلبانی</td><td><span class="tag normal">عادی</span></td><td>تا ناتوانی</td></tr>
+    </table>
+    <div class="note">⏱ استراحت: ۱-۱.۵ دقیقه بین دراپ‌ست‌ها | ۶۰-۹۰ ثانیه بین حرکات عادی</div>
+  </div>
+
+  <!-- روز ۶ -->
+  <div class="day drop">
+    <div class="day-title"><span class="day-num">۶</span><span>پا + بک + سرشانه + کول + فیله — دراپ‌ست</span></div>
+    <table>
+      <tr><th>#</th><th>حرکت</th><th>سیستم</th><th>تکرار</th></tr>
+      <tr><td>۱</td><td>جلو پا دستگاه</td><td><span class="tag drop">دراپ‌ست</span></td><td>۱۰+۸+۶</td></tr>
+      <tr><td>۲</td><td>اسکات اسمیت</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۳</td><td>پشت پا دستگاه اسمیت</td><td><span class="tag drop">دراپ‌ست</span></td><td>۱۰+۸+۶</td></tr>
+      <tr><td>۴</td><td>ساق پا دستگاه</td><td><span class="tag normal">عادی</span></td><td>۱۲-۱۵</td></tr>
+      <tr><td>۵</td><td>لت از جلو دستگاه</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۶</td><td>تی بار</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۷</td><td>سرشانه دستگاه</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۸</td><td>سرشانه اسمیت</td><td><span class="tag drop">دراپ‌ست</span></td><td>۸+۶+۴</td></tr>
+      <tr><td>۹</td><td>کول اسمیت</td><td><span class="tag normal">عادی</span></td><td>۱۰-۱۲</td></tr>
+      <tr><td>۱۰</td><td>فیله با صفه</td><td><span class="tag normal">عادی</span></td><td>۱۵-۲۰</td></tr>
+    </table>
+    <div class="note">⏱ استراحت: ۱-۱.۵ دقیقه بین دراپ‌ست‌ها | ۶۰-۹۰ ثانیه بین حرکات عادی</div>
+  </div>
+
+  <!-- هشدارها -->
+  <div class="warn">
+    <h3>⚠️ نکات حیاتی</h3>
+    <ul>
+      <li>مدت اجرا: حداکثر ۲-۳ هفته، سپس ۱ هفته دیلود کامل</li>
+      <li>خواب ۸+ ساعت | تغذیه پرپروتئین | آب کافی</li>
+      <li>علائم بیش‌تمرینی: افت قدرت، بی‌انگیزگی، درد مفصلی → استراحت فوری</li>
+      <li>حداقل ۱ روز استراحت کامل در میانه هفته</li>
+      <li>مبتدی: اصلاً توصیه نمی‌شود</li>
+    </ul>
+  </div>
+
+  <!-- فوتر تماس -->
+  <div class="contact-footer">
+    <h3>📩 برای دریافت برنامه شخصی خودت</h3>
+    <p>کافیه در پیام‌رسان‌های زیر پیام بدی:</p>
+    <div class="phone">۰۹۰۲۳۹۸۹۷۸۸</div>
+    <div class="apps">
+      <span class="app-badge">🟣 روبیکا</span>
+      <span class="app-badge">🔵 ایتا</span>
+      <span class="app-badge">🟢 واتساپ</span>
+      <span class="app-badge">🔷 تلگرام</span>
+    </div>
+    <p class="final-text">منتظرت هستم 💪</p>
+  </div>
+
+  <footer>Powered by <span>FitPanel</span> — سیستم مدیریت هوشمند باشگاه</footer>
+
+</div>
+
+<!-- === اسکریپت شمارش معکوس شهریه === -->
+<script>
+  const dueDate = new Date(2026, 10, 16, 23, 59, 59);
+  const startDate = new Date(dueDate);
+  startDate.setDate(startDate.getDate() - 30);
+
+  function toPersianDate(date) {
+    try {
+      return date.toLocaleDateString('fa-IR', {
+        year: 'numeric', month: '2-digit', day: '2-digit'
+      });
+    } catch(e) {
+      return date.toLocaleDateString('fa-IR');
+    }
+  }
+
+  function updateFee() {
+    const now = new Date();
+    const diff = dueDate - now;
+    const remainingEl = document.getElementById('remaining-time');
+    const dueEl = document.getElementById('due-date');
+    const barEl = document.getElementById('progress-bar');
+    if (!remainingEl || !dueEl || !barEl) return;
+
+    dueEl.textContent = toPersianDate(dueDate);
+
+    if (diff <= 0) {
+      remainingEl.textContent = '⛔ منقضی شده — تمدید کن';
+      remainingEl.className = 'value danger';
+      barEl.style.width = '100%';
+      barEl.className = 'fee-progress-bar danger';
+      return;
+    }
+
+    const totalMinutes = Math.floor(diff / (1000 * 60));
+    const days = Math.floor(totalMinutes / (60 * 24));
+    const minutes = totalMinutes % 60;
+
+    let text = days > 0 ? days + ' روز' : minutes + ' دقیقه';
+    remainingEl.textContent = text;
+
+    const total = dueDate - startDate;
+    const passed = now - startDate;
+    const percent = Math.min(100, Math.max(0, (passed / total) * 100));
+    barEl.style.width = percent + '%';
+
+    if (days <= 3) {
+      remainingEl.className = 'value danger';
+      barEl.className = 'fee-progress-bar danger';
+    } else if (days <= 7) {
+      remainingEl.className = 'value warning';
+      barEl.className = 'fee-progress-bar warning';
+    } else {
+      remainingEl.className = 'value ok';
+      barEl.className = 'fee-progress-bar';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    updateFee();
+    setInterval(updateFee, 60000);
+  });
+</script>
+
+</body>
+</html>
